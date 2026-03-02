@@ -25,18 +25,264 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Josefin+Sans:wght@600;700&display=swap" rel="stylesheet" />
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <!-- Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
-    <!-- AOS -->
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-    <!-- Custom -->
-    <link rel="stylesheet" href="style.css" />
 
-    <!-- Structured Data -->
+    <style>
+      /* ===== CSS VARIABLES ===== */
+      :root {
+        --primary: #4f46e5;
+        --primary-light: #818cf8;
+        --primary-dark: #3730a3;
+        --accent: #06b6d4;
+        --bg: #ffffff;
+        --bg-alt: #f8fafc;
+        --surface: rgba(255,255,255,0.7);
+        --border: rgba(79,70,229,0.15);
+        --text: #1e293b;
+        --text-muted: #64748b;
+        --text-secondary: #475569;
+        --shadow: 0 4px 24px rgba(79,70,229,0.08);
+        --radius: 1rem;
+        --grad: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+      }
+      [data-theme="dark"] {
+        --bg: #0b1120;
+        --bg-alt: #111827;
+        --surface: rgba(17,24,39,0.8);
+        --border: rgba(129,140,248,0.2);
+        --text: #f1f5f9;
+        --text-muted: #94a3b8;
+        --text-secondary: #cbd5e1;
+        --shadow: 0 4px 24px rgba(0,0,0,0.4);
+      }
+
+      /* ===== BASE ===== */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scroll-behavior: smooth; }
+      body {
+        font-family: 'Inter', sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        transition: background .3s, color .3s;
+      }
+
+      /* ===== SCROLL PROGRESS ===== */
+      .scroll-progress {
+        position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+        background: var(--grad); z-index: 9999; transition: width .1s;
+      }
+
+      /* ===== SKIP LINK ===== */
+      .skip-link {
+        position: absolute; top: -100px; left: 1rem;
+        background: var(--primary); color: #fff; padding: .5rem 1rem;
+        border-radius: var(--radius); z-index: 10000; text-decoration: none;
+        transition: top .2s;
+      }
+      .skip-link:focus { top: 1rem; }
+
+      /* ===== NAVBAR ===== */
+      .navbar-custom {
+        background: rgba(255,255,255,0.85);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        transition: background .3s, border-color .3s;
+      }
+      [data-theme="dark"] .navbar-custom { background: rgba(11,17,32,0.9); }
+      .navbar-custom .navbar-brand { font-family: 'Josefin Sans', sans-serif; color: var(--text); font-size: 1.25rem; }
+      .brand-mark {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 2rem; height: 2rem; background: var(--grad);
+        color: #fff; border-radius: .4rem; font-weight: 700; margin-right: .4rem;
+        font-size: 1rem;
+      }
+      .navbar-custom .nav-link { color: var(--text-secondary) !important; font-weight: 500; transition: color .2s; }
+      .navbar-custom .nav-link:hover, .navbar-custom .nav-link.active { color: var(--primary) !important; }
+      .btn-soft-icon {
+        background: transparent; border: 1px solid var(--border);
+        color: var(--text); border-radius: .5rem; padding: .4rem .6rem;
+        transition: background .2s;
+      }
+      .btn-soft-icon:hover { background: var(--bg-alt); }
+      .btn-primary { background: var(--grad); border: none; }
+      .btn-primary:hover { opacity: .9; transform: translateY(-1px); }
+      .btn-outline-primary { border-color: var(--primary); color: var(--primary); }
+      .btn-outline-primary:hover { background: var(--primary); color: #fff; }
+      .btn-soft { background: var(--bg-alt); color: var(--text); border: 1px solid var(--border); }
+      .btn-soft:hover { background: var(--border); }
+
+      /* ===== HERO ===== */
+      .section { padding: 5rem 0; }
+      .hero { padding-top: 8rem; min-height: 100vh; display: flex; align-items: center; }
+      .aurora {
+        position: absolute; inset: 0; pointer-events: none;
+        background: radial-gradient(ellipse 80% 60% at 60% 40%, rgba(79,70,229,.08) 0%, transparent 70%),
+                    radial-gradient(ellipse 60% 50% at 20% 80%, rgba(6,182,212,.06) 0%, transparent 70%);
+      }
+
+      .dot-pulse {
+        display: inline-block; width: .55rem; height: .55rem;
+        border-radius: 50%; background: #22c55e;
+        animation: pulse 1.5s infinite;
+      }
+      @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(.8)} }
+
+      .grad-text {
+        background: var(--grad); -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent; background-clip: text;
+      }
+
+      .profile-outer { position: relative; }
+      .profile-ring {
+        position: absolute; inset: -12px; border-radius: 1.5rem;
+        background: var(--grad); opacity: .2; z-index: 0;
+        animation: ringPulse 3s ease-in-out infinite;
+      }
+      @keyframes ringPulse { 0%,100%{opacity:.2;transform:scale(1)} 50%{opacity:.35;transform:scale(1.02)} }
+      .profile-img { position: relative; z-index: 1; border-radius: 1.2rem !important; }
+
+      .icon-link {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 2.4rem; height: 2.4rem; border-radius: 50%;
+        border: 1.5px solid var(--border); color: var(--text-secondary);
+        font-size: 1.1rem; text-decoration: none; transition: all .2s;
+      }
+      .icon-link:hover { background: var(--primary); color: #fff; border-color: var(--primary); transform: translateY(-2px); }
+
+      /* ===== SECTION TITLE ===== */
+      .section-title {
+        font-family: 'Josefin Sans', sans-serif; font-size: 2rem;
+        position: relative; display: inline-block; padding-bottom: .75rem;
+      }
+      .section-title::after {
+        content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+        width: 3rem; height: 3px; border-radius: 2px; background: var(--grad);
+      }
+
+      /* ===== GLASS CARD ===== */
+      .glass {
+        background: var(--surface);
+        backdrop-filter: blur(12px);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+      .gradient-border { transition: box-shadow .2s, transform .2s; }
+      .gradient-border:hover { box-shadow: 0 8px 32px rgba(79,70,229,.15); transform: translateY(-3px); }
+
+      /* ===== SKILL RADIAL ===== */
+      .skill-card { border-radius: var(--radius); }
+      .radial-progress {
+        --p: 0; --size: 80px; --thickness: 7px;
+        width: var(--size); height: var(--size); position: relative;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .radial-progress::before {
+        content: ''; position: absolute; inset: 0; border-radius: 50%;
+        background: conic-gradient(from 0deg, var(--primary) calc(var(--p) * 1%), var(--bg-alt) calc(var(--p) * 1%));
+        mask: radial-gradient(farthest-side, transparent calc(100% - var(--thickness)), #000 calc(100% - var(--thickness)));
+        -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--thickness)), #000 calc(100% - var(--thickness)));
+      }
+      .radial-progress .value { font-size: .85rem; font-weight: 700; color: var(--primary); z-index: 1; }
+
+      /* ===== PROJECTS ===== */
+      .project-card { border-radius: var(--radius); overflow: hidden; color: var(--text); }
+      .project-thumb { position: relative; overflow: hidden; height: 180px; }
+      .project-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
+      .project-card:hover .project-thumb img { transform: scale(1.06); }
+      .overlay {
+        position: absolute; inset: 0; background: rgba(79,70,229,.75);
+        display: flex; flex-wrap: wrap; align-items: flex-end; gap: .4rem; padding: 1rem;
+        opacity: 0; transition: opacity .3s;
+      }
+      .project-card:hover .overlay { opacity: 1; }
+      .overlay .badge { background: rgba(255,255,255,.2); color: #fff; font-size: .7rem; backdrop-filter: blur(4px); }
+
+      /* ===== EXPERIENCE TIMELINE ===== */
+      .timeline { position: relative; padding-left: 2.5rem; }
+      .timeline::before {
+        content: ''; position: absolute; left: .85rem; top: 0; bottom: 0;
+        width: 2px; background: var(--grad); border-radius: 2px;
+        opacity: .4;
+      }
+      .timeline-item { position: relative; margin-bottom: 2.5rem; }
+      .timeline-item:last-child { margin-bottom: 0; }
+      .timeline-dot {
+        position: absolute; left: -1.65rem; top: .3rem;
+        width: 1rem; height: 1rem; border-radius: 50%;
+        background: var(--grad); border: 2px solid var(--bg);
+        box-shadow: 0 0 0 3px rgba(79,70,229,.2);
+      }
+      .timeline-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        backdrop-filter: blur(8px);
+        transition: box-shadow .2s, transform .2s;
+      }
+      .timeline-card:hover { box-shadow: 0 8px 32px rgba(79,70,229,.12); transform: translateY(-2px); }
+      .timeline-badge {
+        display: inline-flex; align-items: center; gap: .4rem;
+        background: rgba(79,70,229,.1); color: var(--primary);
+        border-radius: 2rem; padding: .25rem .75rem; font-size: .78rem; font-weight: 600;
+      }
+      .timeline-date {
+        font-size: .8rem; color: var(--text-muted); font-weight: 500;
+        display: flex; align-items: center; gap: .4rem;
+      }
+      .timeline-title { font-weight: 700; font-size: 1.05rem; color: var(--text); margin: .5rem 0 .25rem; }
+      .timeline-org { color: var(--primary); font-weight: 600; font-size: .9rem; }
+      .timeline-desc { color: var(--text-secondary); font-size: .875rem; margin-top: .75rem; }
+      .timeline-desc li { margin-bottom: .4rem; }
+      .tech-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .85rem; }
+      .tech-tag {
+        background: var(--bg-alt); border: 1px solid var(--border);
+        border-radius: .5rem; padding: .15rem .6rem; font-size: .72rem;
+        color: var(--text-secondary); font-weight: 500;
+      }
+
+      /* ===== CONTACT ===== */
+      .contact-card { border-radius: var(--radius); }
+      .contact-card a { color: var(--text); text-decoration: none; }
+      .contact-card a:hover { color: var(--primary); }
+
+      /* ===== FOOTER ===== */
+      footer { background: var(--bg-alt); border-top: 1px solid var(--border); }
+
+      /* ===== BACK TO TOP ===== */
+      .back-to-top {
+        position: fixed; bottom: 2rem; right: 2rem;
+        width: 3rem; height: 3rem; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0; transform: translateY(20px); pointer-events: none;
+        transition: all .3s; z-index: 999;
+        background: var(--grad); border: none;
+      }
+      .back-to-top.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+      /* ===== DARK MODE ADJUSTMENTS ===== */
+      [data-theme="dark"] .navbar-custom .navbar-toggler-icon { filter: invert(1); }
+      [data-theme="dark"] .text-secondary { color: var(--text-secondary) !important; }
+      [data-theme="dark"] .text-muted { color: var(--text-muted) !important; }
+      [data-theme="dark"] .btn-soft { background: rgba(255,255,255,.05); color: var(--text); border-color: var(--border); }
+      [data-theme="dark"] .glass { background: rgba(17,24,39,0.7); }
+      [data-theme="dark"] .tech-tag { background: rgba(255,255,255,.05); }
+      [data-theme="dark"] .aurora {
+        background: radial-gradient(ellipse 80% 60% at 60% 40%, rgba(79,70,229,.12) 0%, transparent 70%),
+                    radial-gradient(ellipse 60% 50% at 20% 80%, rgba(6,182,212,.1) 0%, transparent 70%);
+      }
+
+      @media (max-width: 576px) {
+        .hero { padding-top: 6rem; min-height: auto; }
+        .section { padding: 3rem 0; }
+        .section-title { font-size: 1.5rem; }
+      }
+    </style>
+
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -57,30 +303,29 @@
     <a class="skip-link" href="#home">Skip to content</a>
     <div id="scrollProgress" class="scroll-progress" aria-hidden="true"></div>
 
-    <!-- Navbar -->
+    <!-- ===== NAVBAR ===== -->
     <nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top">
       <div class="container">
         <a class="navbar-brand fw-bold" href="#top" aria-label="Mahmudul Hasan home">
           <span class="brand-mark">M</span>ahmudul Hasan
         </a>
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
+          aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-
         <div class="collapse navbar-collapse" id="navMenu">
           <ul class="navbar-nav ms-auto me-3 align-items-lg-center">
             <li class="nav-item"><a class="nav-link active" href="#home" aria-current="page">Home</a></li>
             <li class="nav-item"><a class="nav-link" href="#skills">Skills</a></li>
+            <li class="nav-item"><a class="nav-link" href="#experience">Experience</a></li>
             <li class="nav-item"><a class="nav-link" href="#projects">Projects</a></li>
             <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
           </ul>
-
           <div class="d-flex align-items-center gap-2">
             <button id="themeToggle" class="btn btn-soft-icon" aria-label="Toggle theme">
               <i class="bi bi-moon-stars"></i>
             </button>
-            <a href="Assets/MAHMUDUL-HASANCV.pdf" class="btn btn-primary rounded-pill" download>
+            <a href="Assets/MAHMUDUL-HASAN CV.pdf" class="btn btn-primary rounded-pill" download>
               Download CV
             </a>
           </div>
@@ -88,7 +333,7 @@
       </div>
     </nav>
 
-    <!-- Hero -->
+    <!-- ===== HERO ===== -->
     <section id="home" class="section hero position-relative overflow-hidden">
       <div class="aurora"></div>
       <div class="container">
@@ -98,7 +343,7 @@
               <span class="dot-pulse" aria-hidden="true"></span> Open to work
             </span>
             <h1 class="display-4 fw-bold mt-3">
-              Hi, I’m <span class="grad-text">Mahmudul Hasan</span>
+              Hi, I'm <span class="grad-text">Mahmudul Hasan</span>
             </h1>
             <p class="lead text-muted mb-3">
               <span class="role"></span>
@@ -117,7 +362,6 @@
               <a href="https://www.facebook.com/faysal.ak0/" target="_blank" rel="noopener noreferrer me" class="icon-link" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
             </div>
           </div>
-
           <div class="col-10 col-md-6 col-lg-5 mx-auto mt-5 mt-lg-0" data-aos="fade-left">
             <div class="profile-outer">
               <div class="profile-ring"></div>
@@ -128,84 +372,59 @@
       </div>
     </section>
 
-    <!-- Skills -->
+    <!-- ===== SKILLS ===== -->
     <section id="skills" class="section">
       <div class="container">
         <div class="text-center mb-5" data-aos="fade-up">
           <h2 class="fw-bold section-title">Skills</h2>
-          <p class="text-secondary">A balanced mix of frontend and backend</p>
+          <p class="text-secondary mt-3">A balanced mix of frontend and backend</p>
         </div>
-
         <div class="row g-4">
-          <!-- Each item: set data-percent to control animation -->
           <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in">
             <div class="skill-card glass gradient-border text-center p-4">
-              <div class="radial-progress mx-auto" data-percent="92">
-                <span class="value">0%</span>
-              </div>
+              <div class="radial-progress mx-auto" data-percent="92"><span class="value">0%</span></div>
               <div class="mt-3 fw-semibold">HTML & CSS</div>
             </div>
           </div>
-
           <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="50">
             <div class="skill-card glass gradient-border text-center p-4">
-              <div class="radial-progress mx-auto" data-percent="86">
-                <span class="value">0%</span>
-              </div>
+              <div class="radial-progress mx-auto" data-percent="86"><span class="value">0%</span></div>
               <div class="mt-3 fw-semibold">JavaScript</div>
             </div>
           </div>
-
           <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="100">
             <div class="skill-card glass gradient-border text-center p-4">
-              <div class="radial-progress mx-auto" data-percent="78">
-                <span class="value">0%</span>
-              </div>
+              <div class="radial-progress mx-auto" data-percent="78"><span class="value">0%</span></div>
               <div class="mt-3 fw-semibold">Node.js</div>
             </div>
           </div>
-
           <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="150">
             <div class="skill-card glass gradient-border text-center p-4">
-              <div class="radial-progress mx-auto" data-percent="74">
-                <span class="value">0%</span>
-              </div>
+              <div class="radial-progress mx-auto" data-percent="74"><span class="value">0%</span></div>
               <div class="mt-3 fw-semibold">C#</div>
             </div>
           </div>
-
           <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="200">
             <div class="skill-card glass gradient-border text-center p-4">
-              <div class="radial-progress mx-auto" data-percent="68">
-                <span class="value">0%</span>
-              </div>
+              <div class="radial-progress mx-auto" data-percent="68"><span class="value">0%</span></div>
               <div class="mt-3 fw-semibold">Angular</div>
             </div>
           </div>
-
           <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="250">
             <div class="skill-card glass gradient-border text-center p-4">
-              <div class="radial-progress mx-auto" data-percent="82">
-                <span class="value">0%</span>
-              </div>
+              <div class="radial-progress mx-auto" data-percent="82"><span class="value">0%</span></div>
               <div class="mt-3 fw-semibold">React.js</div>
             </div>
           </div>
-
           <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="300">
             <div class="skill-card glass gradient-border text-center p-4">
-              <div class="radial-progress mx-auto" data-percent="76">
-                <span class="value">0%</span>
-              </div>
+              <div class="radial-progress mx-auto" data-percent="76"><span class="value">0%</span></div>
               <div class="mt-3 fw-semibold">SQL Server</div>
             </div>
           </div>
-
           <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="350">
             <div class="skill-card glass gradient-border text-center p-4">
-              <div class="radial-progress mx-auto" data-percent="72">
-                <span class="value">0%</span>
-              </div>
+              <div class="radial-progress mx-auto" data-percent="72"><span class="value">0%</span></div>
               <div class="mt-3 fw-semibold">ASP.NET</div>
             </div>
           </div>
@@ -213,20 +432,141 @@
       </div>
     </section>
 
-    <!-- Projects -->
-    <section id="projects" class="section pt-0">
+    <!-- ===== EXPERIENCE ===== -->
+    <section id="experience" class="section" style="background: var(--bg-alt);">
+      <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+          <h2 class="fw-bold section-title">Experience & Training</h2>
+          <p class="text-secondary mt-3">My professional journey so far</p>
+        </div>
+
+        <div class="row g-5">
+          <!-- Left: Professional Experience -->
+          <div class="col-lg-6" data-aos="fade-right">
+            <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
+              <i class="bi bi-briefcase-fill text-primary"></i> Professional Experience
+            </h5>
+            <div class="timeline">
+
+              <!-- Job 1 -->
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-card">
+                  <div class="d-flex align-items-start justify-content-between flex-wrap gap-2">
+                    <div>
+                      <span class="timeline-badge"><i class="bi bi-circle-fill" style="font-size:.5rem"></i> Ongoing</span>
+                      <div class="timeline-title">Software Developer</div>
+                      <div class="timeline-org">
+                        <i class="bi bi-building me-1"></i>
+                        Global MediKlaud (BD) Limited
+                      </div>
+                      <div class="text-muted small mt-1">Hospital ERP — Dhaka Chamber of Commerce & Industry</div>
+                    </div>
+                    <div class="timeline-date">
+                      <i class="bi bi-calendar3"></i> Dec 2025 — Present
+                    </div>
+                  </div>
+                  <ul class="timeline-desc ps-3">
+                    <li>Developing a web application using <strong>React.js</strong> (frontend) and <strong>PostgreSQL</strong> (backend database).</li>
+                    <li>Collaborating with team members to implement new features and enhance user experience.</li>
+                    <li>Assisting in software testing, debugging, and performance optimization.</li>
+                    <li>Gaining hands-on experience in full-stack development in a professional environment.</li>
+                  </ul>
+                  <div class="tech-tags">
+                    <span class="tech-tag">React.js</span>
+                    <span class="tech-tag">PostgreSQL</span>
+                    <span class="tech-tag">Full-Stack</span>
+                    <span class="tech-tag">Hospital ERP</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Right: Training -->
+          <div class="col-lg-6" data-aos="fade-left">
+            <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
+              <i class="bi bi-mortarboard-fill text-primary"></i> Professional Training
+            </h5>
+            <div class="timeline">
+
+              <!-- Training -->
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-card">
+                  <div class="d-flex align-items-start justify-content-between flex-wrap gap-2">
+                    <div>
+                      <span class="timeline-badge"><i class="bi bi-award-fill" style="font-size:.7rem"></i> Certified</span>
+                      <div class="timeline-title">Enterprise System Analysis & Design — C#.NET (ESAD-CS)</div>
+                      <div class="timeline-org">
+                        <i class="bi bi-bank me-1"></i>
+                        IsDB-BISEW IT Scholarship Programme
+                      </div>
+                      <div class="text-muted small mt-1">Training by People-N-Tech · IDB Bhaban, Agargaon, Dhaka‑1207</div>
+                    </div>
+                    <div class="timeline-date">
+                      <i class="bi bi-calendar3"></i> Oct 2024 — Aug 2025
+                    </div>
+                  </div>
+                  <p class="timeline-desc mt-2 mb-0">
+                    Completed an intensive <strong>8.5-month (788-hour)</strong> program covering enterprise-grade .NET development, building real-world projects across ASP.NET Core, MVC, C#, SQL Server, and modern frontend technologies.
+                  </p>
+                  <div class="tech-tags mt-3">
+                    <span class="tech-tag">ASP.NET Core</span>
+                    <span class="tech-tag">C# / MVC</span>
+                    <span class="tech-tag">SQL Server</span>
+                    <span class="tech-tag">React.js</span>
+                    <span class="tech-tag">Angular</span>
+                    <span class="tech-tag">TypeScript</span>
+                    <span class="tech-tag">Entity Framework</span>
+                    <span class="tech-tag">ADO.NET</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Career Objective Card -->
+        <div class="row mt-5" data-aos="fade-up">
+          <div class="col-lg-10 mx-auto">
+            <div class="glass p-4 p-md-5" style="border-radius: var(--radius);">
+              <div class="d-flex align-items-start gap-3">
+                <div class="flex-shrink-0">
+                  <span style="font-size:2.5rem">🎯</span>
+                </div>
+                <div>
+                  <h5 class="fw-bold mb-2">Career Objective</h5>
+                  <p class="text-secondary mb-0">
+                    I've completed a course on ASP.NET with C#, where I learned to build web applications using
+                    technologies like ASP.NET Core, MVC, C#, and SQL Server. I've worked on practical projects during
+                    my training and gained a solid understanding of how web applications and APIs are developed.
+                    I'm now looking for an opportunity to apply what I've learned, keep growing, and contribute
+                    as part of a professional development team.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===== PROJECTS ===== -->
+    <section id="projects" class="section pt-5">
       <div class="container">
         <div class="text-center mb-5" data-aos="fade-up">
           <h2 class="fw-bold section-title">Projects</h2>
-          <p class="text-secondary">Selected work I’m proud of</p>
+          <p class="text-secondary mt-3">Selected work I'm proud of</p>
         </div>
-
         <div class="row g-4">
-          <!-- HTML5 + CSS3 Notebook -->
           <div class="col-md-6 col-lg-4" data-aos="fade-up">
             <a href="https://html-5-css-3-full-book.vercel.app/" target="_blank" rel="noopener noreferrer" class="project-card glass gradient-border text-decoration-none d-block tilt">
               <div class="project-thumb">
-                <img src="Assets/htmlbook.png" alt="Interactive HTML5 & CSS3 notebook with clean components" loading="lazy" decoding="async" />
+                <img src="Assets/htmlbook.png" alt="Interactive HTML5 & CSS3 notebook" loading="lazy" decoding="async" />
                 <div class="overlay">
                   <span class="badge">HTML & CSS</span>
                   <span class="badge">JavaScript</span>
@@ -238,12 +578,10 @@
               </div>
             </a>
           </div>
-
-          <!-- ADO.NET + Crystal Reports: Event Management -->
           <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
             <a href="https://github.com/Mahmudul07-prog/ADO_and_crystal-_Report_Event_management.git" target="_blank" rel="noopener noreferrer" class="project-card glass gradient-border text-decoration-none d-block tilt">
               <div class="project-thumb">
-                <img src="Assets/Ado & Cystal report.png" alt="Event management app with ADO.NET data layer and Crystal Reports" loading="lazy" decoding="async" />
+                <img src="Assets/Ado & Cystal report.png" alt="Event management app with ADO.NET and Crystal Reports" loading="lazy" decoding="async" />
                 <div class="overlay">
                   <span class="badge">ADO.NET</span>
                   <span class="badge">Crystal Reports</span>
@@ -257,7 +595,6 @@
               </div>
             </a>
           </div>
-          <!-- Coffee Website -->
           <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
             <a href="https://mahmudul07-prog.github.io/Coffee-Website-Complete/" target="_blank" rel="noopener noreferrer" class="project-card glass gradient-border text-decoration-none d-block tilt">
               <div class="project-thumb">
@@ -265,21 +602,19 @@
                 <div class="overlay">
                   <span class="badge">HTML</span>
                   <span class="badge">CSS</span>
-                  <span class="badge">JAVASCRIPT</span>
+                  <span class="badge">JavaScript</span>
                 </div>
               </div>
               <div class="p-4">
                 <h5 class="mb-1">Coffee Management System</h5>
-                <p class="text-secondary small mb-0">Coffee Product </p>
+                <p class="text-secondary small mb-0">Coffee Product Showcase</p>
               </div>
             </a>
           </div>
-
-          <!-- Node.js eCommerce (MongoDB) -->
           <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
             <a href="https://github.com/Mahmudul07-prog/Ecommerce-Site-with-NodeJs.git" target="_blank" rel="noopener noreferrer" class="project-card glass gradient-border text-decoration-none d-block tilt">
               <div class="project-thumb">
-                <img src="Assets/Mongodb.png" alt="Node.js eCommerce app with MongoDB and secure checkout" loading="lazy" decoding="async" />
+                <img src="Assets/Mongodb.png" alt="Node.js eCommerce app with MongoDB" loading="lazy" decoding="async" />
                 <div class="overlay">
                   <span class="badge">JavaScript</span>
                   <span class="badge">Node.js</span>
@@ -293,12 +628,10 @@
               </div>
             </a>
           </div>
-
-          <!-- Real-time Chat -->
           <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
             <a href="https://github.com/Mahmudul07-prog/Live_Chatting.git" target="_blank" rel="noopener noreferrer" class="project-card glass gradient-border text-decoration-none d-block tilt">
               <div class="project-thumb">
-                <img src="Assets/Live Chatting.png" alt="Real-time chat interface built with Node and JavaScript" loading="lazy" decoding="async" />
+                <img src="Assets/Live Chatting.png" alt="Real-time chat" loading="lazy" decoding="async" />
                 <div class="overlay">
                   <span class="badge">HTML</span>
                   <span class="badge">Node.js</span>
@@ -311,18 +644,15 @@
               </div>
             </a>
           </div>
-
-          <!-- Device Management (ASP.NET Core MVC) -->
           <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
             <a href="https://github.com/Mahmudul07-prog/Device-Management-System-ASP.NET-CORE.git" target="_blank" rel="noopener noreferrer" class="project-card glass gradient-border text-decoration-none d-block tilt">
               <div class="project-thumb">
-                <img src="Assets/MVC CORE.png" alt="Device Management System built in ASP.NET Core MVC with SQL Server" loading="lazy" decoding="async" />
+                <img src="Assets/MVC CORE.png" alt="Device Management System" loading="lazy" decoding="async" />
                 <div class="overlay">
                   <span class="badge">.NET Core</span>
                   <span class="badge">MVC</span>
                   <span class="badge">SQL Server</span>
                   <span class="badge">Bootstrap</span>
-                  <span class="badge">HTML & CSS</span>
                 </div>
               </div>
               <div class="p-4">
@@ -331,57 +661,49 @@
               </div>
             </a>
           </div>
-
-          <!-- E‑Movie Ticketing (Role-based) -->
           <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
             <a href="https://github.com/Mahmudul07-prog/E_Movie-Ticket.git" target="_blank" rel="noopener noreferrer" class="project-card glass gradient-border text-decoration-none d-block tilt">
               <div class="project-thumb">
-                <img src="Assets/ROLL BASE .NET CORE.png" alt="Role-based movie ticketing app in ASP.NET Core MVC" loading="lazy" decoding="async" />
+                <img src="Assets/ROLL BASE .NET CORE.png" alt="Role-based movie ticketing app" loading="lazy" decoding="async" />
                 <div class="overlay">
                   <span class="badge">.NET Core</span>
                   <span class="badge">MVC</span>
                   <span class="badge">Auth</span>
                   <span class="badge">SQL Server</span>
-                  <span class="badge">Bootstrap</span>
                 </div>
               </div>
               <div class="p-4">
-                <h5 class="mb-1">Full‑Stack eCommerce</h5>
+                <h5 class="mb-1">Full‑Stack eCommerce (Movie Ticket)</h5>
                 <p class="text-secondary small mb-0">Ticket catalog, cart, secure checkout</p>
               </div>
             </a>
           </div>
-
-           <!-- Instructor and Course  -->
           <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
             <a href="https://github.com/Mahmudul07-prog/Instructor_TypeScript_React.git" target="_blank" rel="noopener noreferrer" class="project-card glass gradient-border text-decoration-none d-block tilt">
               <div class="project-thumb">
-                <img src="Assets/TypeScript.png" alt="Instructor and Course app in ASP.NET Core MVC" loading="lazy" decoding="async" />
+                <img src="Assets/TypeScript.png" alt="Instructor and Course app" loading="lazy" decoding="async" />
                 <div class="overlay">
                   <span class="badge">.NET Core</span>
                   <span class="badge">React</span>
-                  <span class="badge">SQL Server</span>
-                  <span class="badge">Bootstrap</span>
                   <span class="badge">TypeScript</span>
+                  <span class="badge">SQL Server</span>
                 </div>
               </div>
               <div class="p-4">
-                <h5 class="mb-1">Instructor Management System </h5>
+                <h5 class="mb-1">Instructor Management System</h5>
                 <p class="text-secondary small mb-0">Instructor TypeScript React SPA</p>
               </div>
             </a>
           </div>
-          <!-- SPA Master Detail -->
           <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
             <a href="https://github.com/Mahmudul07-prog/Master-Detail-SPA-.git" target="_blank" rel="noopener noreferrer" class="project-card glass gradient-border text-decoration-none d-block tilt">
               <div class="project-thumb">
-                <img src="Assets/MVC.png" alt="Master-Detail SPA with AJAX and jQuery" loading="lazy" decoding="async" />
+                <img src="Assets/MVC.png" alt="Master-Detail SPA" loading="lazy" decoding="async" />
                 <div class="overlay">
                   <span class="badge">MVC</span>
                   <span class="badge">AJAX</span>
                   <span class="badge">SPA</span>
                   <span class="badge">jQuery</span>
-                  <span class="badge">Bootstrap</span>
                 </div>
               </div>
               <div class="p-4">
@@ -394,17 +716,17 @@
       </div>
     </section>
 
-    <!-- Contact -->
-    <section id="contact" class="section">
+    <!-- ===== CONTACT ===== -->
+    <section id="contact" class="section" style="background: var(--bg-alt);">
       <div class="container">
         <div class="row justify-content-center" data-aos="fade-up">
           <div class="col-lg-8">
-            <div class="contact-card glass gradient-border p-4 p-md-5">
+            <div class="contact-card glass p-4 p-md-5">
               <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
                 <div>
-                  <h3 class="fw-bold mb-2">Let’s build something great</h3>
+                  <h3 class="fw-bold mb-2">Let's build something great</h3>
                   <p class="text-secondary mb-4">
-                    I’d love to hear about your project or role. Reach out via email or WhatsApp.
+                    I'd love to hear about your project or role. Reach out via email or WhatsApp.
                   </p>
                   <ul class="list-unstyled mb-0">
                     <li class="mb-2">
@@ -413,40 +735,40 @@
                     </li>
                     <li class="mb-2">
                       <i class="bi bi-telephone-fill me-2 text-primary"></i>
-                      <a href="tel:+8801863846300" class="link-body-emphasis">+880 1863‑846300</a>
+                      <a href="tel:+8801863846300">+880 1863‑846300</a>
                     </li>
                     <li>
                       <i class="bi bi-send-fill me-2 text-primary"></i>
-                      <a href="mailto:mh66441122@gmail.com" class="link-body-emphasis">mh66441122@gmail.com</a>
+                      <a href="mailto:faysalkrock2@gmail.com">faysalkrock2@gmail.com</a>
                     </li>
                   </ul>
                 </div>
                 <div class="d-flex flex-column gap-2">
-                  <a href="mailto:mh66441122@gmail.com?subject=Project%20inquiry%20from%20Portfolio" class="btn btn-primary rounded-pill">
+                  <a href="mailto:faysalkrock2@gmail.com?subject=Project%20inquiry%20from%20Portfolio" class="btn btn-primary rounded-pill">
                     <i class="bi bi-envelope me-2"></i>Email Me
                   </a>
                   <a href="https://wa.me/8801863846300" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary rounded-pill">
                     <i class="bi bi-whatsapp me-2"></i>WhatsApp
                   </a>
-                  <a href="Assets/MAHMUDUL-HASANCV.pdf" class="btn btn-soft rounded-pill" download>
+                  <a href="Assets/MAHMUDUL-HASAN CV.pdf" class="btn btn-soft rounded-pill" download>
                     <i class="bi bi-download me-2"></i>Download CV
                   </a>
                 </div>
               </div>
             </div>
             <p class="text-center small text-secondary mt-3">
-              Prefer a quick call? Send me a message and I’ll schedule one.
+              Prefer a quick call? Send me a message and I'll schedule one.
             </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="py-4 border-0">
+    <!-- ===== FOOTER ===== -->
+    <footer class="py-4">
       <div class="container text-center">
         <div class="d-flex justify-content-center gap-3 mb-3">
-          <a href="mailto:mh66441122@gmail.com" class="icon-link" aria-label="Email"><i class="bi bi-envelope"></i></a>
+          <a href="mailto:faysalkrock2@gmail.com" class="icon-link" aria-label="Email"><i class="bi bi-envelope"></i></a>
           <a href="https://wa.me/8801863846300" target="_blank" rel="noopener noreferrer" class="icon-link" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
           <a href="https://www.linkedin.com/in/mahmudul-hasan-80259b374/" target="_blank" rel="noopener noreferrer me" class="icon-link" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
           <a href="https://www.facebook.com/faysal.ak0/" target="_blank" rel="noopener noreferrer me" class="icon-link" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
@@ -455,14 +777,136 @@
       </div>
     </footer>
 
-    <!-- Back to top -->
-    <button id="backToTop" class="btn btn-primary btn-lg back-to-top" aria-label="Back to top">
+    <button id="backToTop" class="btn btn-lg back-to-top" aria-label="Back to top">
       <i class="bi bi-arrow-up"></i>
     </button>
 
     <!-- Scripts -->
     <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script defer src="https://unpkg.com/aos@next/dist/aos.js"></script>
-    <script defer src="script.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        if (window.AOS) AOS.init({ duration: 700, easing: 'ease-out-cubic', once: true });
+      });
+
+      // Footer year
+      (function() {
+        const y = document.getElementById('year');
+        if (y) y.textContent = new Date().getFullYear();
+      })();
+
+      // Theme toggle
+      (function() {
+        const root = document.documentElement;
+        const btn = document.getElementById('themeToggle');
+        const stored = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        function setTheme(mode) {
+          root.setAttribute('data-theme', mode);
+          localStorage.setItem('theme', mode);
+          if (btn) {
+            btn.innerHTML = mode === 'dark' ? '<i class="bi bi-sun"></i>' : '<i class="bi bi-moon-stars"></i>';
+            btn.setAttribute('aria-label', mode === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
+          }
+          const metaTheme = document.querySelector('meta[name="theme-color"]');
+          if (metaTheme) metaTheme.setAttribute('content', mode === 'dark' ? '#0b1020' : '#4f46e5');
+        }
+        setTheme(stored || (prefersDark ? 'dark' : 'light'));
+        btn?.addEventListener('click', () => {
+          setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        });
+      })();
+
+      // Scroll progress
+      (function() {
+        const bar = document.getElementById('scrollProgress');
+        if (!bar) return;
+        const onScroll = () => {
+          const h = document.documentElement;
+          bar.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+      })();
+
+      // Back to top
+      (function() {
+        const btn = document.getElementById('backToTop');
+        if (!btn) return;
+        window.addEventListener('scroll', () => {
+          if (window.scrollY > 400) btn.classList.add('show'); else btn.classList.remove('show');
+        }, { passive: true });
+        btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+      })();
+
+      // Smooth anchor
+      (function() {
+        document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach(link => {
+          link.addEventListener('click', e => {
+            const target = document.getElementById(link.getAttribute('href').slice(1));
+            if (target) {
+              e.preventDefault();
+              target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              const navMenu = document.getElementById('navMenu');
+              if (navMenu?.classList.contains('show')) {
+                bootstrap.Collapse.getOrCreateInstance(navMenu).hide();
+              }
+            }
+          });
+        });
+      })();
+
+      // Typewriter
+      (function() {
+        const el = document.querySelector('.role');
+        if (!el) return;
+        const phrases = [
+          'Full‑Stack Developer',
+          'ASP.NET Core • C# • SQL Server',
+          'React • Angular • TypeScript',
+          'Node.js • Express • MongoDB',
+          'Accessible • Performant • Reliable'
+        ];
+        let idx = 0, pos = 0, writing = true;
+        function loop() {
+          const text = phrases[idx % phrases.length];
+          if (writing) {
+            pos++; el.textContent = text.slice(0, pos);
+            if (pos === text.length) { writing = false; return setTimeout(loop, 1200); }
+            return setTimeout(loop, 28);
+          } else {
+            pos--; el.textContent = text.slice(0, pos);
+            if (pos === 0) { writing = true; idx++; }
+            return setTimeout(loop, 16);
+          }
+        }
+        loop();
+      })();
+
+      // Radial progress
+      (function() {
+        const rings = document.querySelectorAll('.radial-progress');
+        if (!rings.length) return;
+        const animate = el => {
+          const target = parseFloat(el.getAttribute('data-percent') || '0');
+          const valueEl = el.querySelector('.value');
+          let current = 0;
+          const step = () => {
+            current += (target - current) * 0.1;
+            if (Math.abs(target - current) < 0.5) current = target;
+            el.style.setProperty('--p', current);
+            if (valueEl) valueEl.textContent = Math.round(current) + '%';
+            if (current < target) requestAnimationFrame(step);
+          };
+          requestAnimationFrame(step);
+        };
+        const io = new IntersectionObserver((entries, obs) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) { animate(entry.target); obs.unobserve(entry.target); }
+          });
+        }, { threshold: 0.35 });
+        rings.forEach(r => io.observe(r));
+      })();
+    </script>
   </body>
 </html>
