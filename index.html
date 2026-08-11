@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Mahmudul Hasan — Full‑Stack Developer</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%234f46e5'/%3E%3Cstop offset='1' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Ctext x='32' y='44' font-family='Arial,Helvetica,sans-serif' font-size='34' font-weight='700' fill='white' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E" />
 
     <meta name="description" content="Mahmudul Hasan — Full‑Stack Developer crafting responsive, accessible, high‑performance web apps." />
     <meta name="robots" content="index,follow" />
@@ -107,12 +108,24 @@
         transition: background .2s;
       }
       .btn-soft-icon:hover { background: var(--bg-alt); }
+      #langToggleLabel { font-size: .8rem; font-weight: 700; }
       .btn-primary { background: var(--grad); border: none; }
       .btn-primary:hover { opacity: .9; transform: translateY(-1px); }
       .btn-outline-primary { border-color: var(--primary); color: var(--primary); }
       .btn-outline-primary:hover { background: var(--primary); color: #fff; }
       .btn-soft { background: var(--bg-alt); color: var(--text); border: 1px solid var(--border); }
       .btn-soft:hover { background: var(--border); }
+
+      /* ===== ABOUT ===== */
+      .about-lead { font-size: 1.15rem; line-height: 1.75; color: var(--text-secondary); }
+      .about-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem; margin-top: 1.5rem; }
+      .about-tag {
+        display: inline-flex; align-items: center; gap: .4rem;
+        background: var(--bg-alt); border: 1px solid var(--border);
+        border-radius: 2rem; padding: .45rem 1rem; font-size: .85rem; font-weight: 600;
+        color: var(--text);
+      }
+      .about-tag i { color: var(--primary); }
 
       /* ===== HERO ===== */
       .section { padding: 5rem 0; }
@@ -173,20 +186,159 @@
       .gradient-border { transition: box-shadow .2s, transform .2s; }
       .gradient-border:hover { box-shadow: 0 8px 32px rgba(79,70,229,.15); transform: translateY(-3px); }
 
-      /* ===== SKILL RADIAL ===== */
-      .skill-card { border-radius: var(--radius); }
-      .radial-progress {
-        --p: 0; --size: 80px; --thickness: 7px;
-        width: var(--size); height: var(--size); position: relative;
-        display: flex; align-items: center; justify-content: center;
+      /* ===== STATS BAR ===== */
+      .stats-bar {
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;
+        text-align: center;
       }
-      .radial-progress::before {
-        content: ''; position: absolute; inset: 0; border-radius: 50%;
-        background: conic-gradient(from 0deg, var(--primary) calc(var(--p) * 1%), var(--bg-alt) calc(var(--p) * 1%));
-        mask: radial-gradient(farthest-side, transparent calc(100% - var(--thickness)), #000 calc(100% - var(--thickness)));
-        -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--thickness)), #000 calc(100% - var(--thickness)));
+      .stat-item .stat-num {
+        font-family: 'Josefin Sans', sans-serif; font-weight: 700;
+        font-size: clamp(1.8rem, 4vw, 2.6rem);
+        background: var(--grad); -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent; background-clip: text;
       }
-      .radial-progress .value { font-size: .85rem; font-weight: 700; color: var(--primary); z-index: 1; }
+      .stat-item .stat-label { color: var(--text-secondary); font-size: .85rem; font-weight: 500; margin-top: .25rem; }
+      @media (max-width: 576px) {
+        .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 1.75rem 1rem; }
+      }
+
+      /* ===== SKILLS MARQUEE PANEL ===== */
+      .skills-panel {
+        position: relative; overflow: hidden;
+        border-radius: 1.75rem;
+        background: var(--surface);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        padding: 4rem 0;
+        isolation: isolate;
+      }
+      [data-theme="dark"] .skills-panel {
+        background: radial-gradient(ellipse 90% 70% at 85% 10%, #1c1c22 0%, #0a0a0d 55%, #000 100%);
+        border: none; box-shadow: 0 20px 60px rgba(0,0,0,.35);
+      }
+      .skills-panel .ai-studio-smoke { left: auto; right: -20%; }
+      .skills-panel-head { position: relative; z-index: 1; text-align: center; padding: 0 1.5rem; margin-bottom: 2.75rem; }
+      .skills-panel-head .eyebrow {
+        color: var(--text-secondary); font-size: .78rem; font-weight: 600;
+        letter-spacing: .35em; text-transform: uppercase;
+      }
+      .skills-panel-head h3 {
+        color: var(--text); font-family: 'Josefin Sans', sans-serif; font-weight: 700;
+        font-size: clamp(1.6rem, 4vw, 2.4rem); margin: .6rem 0 .75rem;
+      }
+      .skills-panel-head p { color: var(--text-secondary); font-size: .95rem; max-width: 40rem; margin: 0 auto; }
+
+      .marquee-track-wrap {
+        position: relative; z-index: 1;
+        -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+        mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+      }
+      .marquee-track {
+        display: flex; gap: 1.25rem; width: max-content;
+        animation: marqueeScroll 26s linear infinite;
+      }
+      .marquee-track:hover { animation-play-state: paused; }
+      @keyframes marqueeScroll {
+        from { transform: translateX(0); }
+        to { transform: translateX(-50%); }
+      }
+      .skill-chip {
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        gap: .6rem; flex-shrink: 0;
+        width: 120px; height: 110px;
+        background: var(--bg-alt);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        transition: background .25s, border-color .25s, transform .25s;
+      }
+      .skill-chip:hover { background: var(--border); transform: translateY(-3px); }
+      .skill-chip svg, .skill-chip i { width: 32px; height: 32px; color: var(--text-secondary); font-size: 1.9rem; }
+      .skill-chip .skill-name { color: var(--text-secondary); font-size: .78rem; font-weight: 500; }
+      [data-theme="dark"] .skill-chip { background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.08); }
+      [data-theme="dark"] .skill-chip:hover { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.18); }
+      [data-theme="dark"] .skill-chip svg, [data-theme="dark"] .skill-chip i { color: rgba(255,255,255,.8); }
+      [data-theme="dark"] .skill-chip .skill-name { color: rgba(255,255,255,.6); }
+      @media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
+
+      /* ===== AI STUDIO PANEL ===== */
+      .ai-studio-panel {
+        position: relative; overflow: hidden;
+        border-radius: 1.75rem;
+        background: var(--surface);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        padding: 4rem 2rem;
+        isolation: isolate;
+      }
+      [data-theme="dark"] .ai-studio-panel {
+        background: radial-gradient(ellipse 90% 70% at 15% 10%, #1c1c22 0%, #0a0a0d 55%, #000 100%);
+        border: none; box-shadow: 0 20px 60px rgba(0,0,0,.35);
+      }
+      .ai-studio-smoke {
+        position: absolute; top: -25%; left: -20%;
+        width: 55%; height: 90%;
+        background:
+          radial-gradient(circle at 35% 40%, rgba(79,70,229,.16) 0%, rgba(79,70,229,.07) 35%, transparent 65%),
+          radial-gradient(circle at 55% 60%, rgba(6,182,212,.12) 0%, transparent 60%);
+        filter: blur(30px);
+        z-index: 0;
+        animation: smokeDrift 10s ease-in-out infinite alternate;
+        pointer-events: none;
+      }
+      [data-theme="dark"] .ai-studio-smoke {
+        background:
+          radial-gradient(circle at 35% 40%, rgba(255,255,255,.30) 0%, rgba(255,255,255,.10) 35%, transparent 65%),
+          radial-gradient(circle at 55% 60%, rgba(180,180,200,.18) 0%, transparent 60%);
+      }
+      @keyframes smokeDrift {
+        0%   { transform: translate(0,0) scale(1) rotate(0deg); }
+        100% { transform: translate(3%, 4%) scale(1.08) rotate(6deg); }
+      }
+      .ai-studio-sparkle {
+        position: absolute; top: 14%; left: 22%; z-index: 1;
+        width: 20px; height: 20px;
+        filter: drop-shadow(0 0 8px rgba(79,70,229,.5));
+        animation: sparkleTwinkle 2.6s ease-in-out infinite;
+      }
+      .ai-studio-sparkle svg { width: 100%; height: 100%; fill: var(--primary); }
+      [data-theme="dark"] .ai-studio-sparkle { filter: drop-shadow(0 0 8px rgba(255,255,255,.9)); }
+      [data-theme="dark"] .ai-studio-sparkle svg { fill: #fff; }
+      .ai-studio-label {
+        position: relative; z-index: 1;
+        text-align: center; color: var(--text-secondary);
+        font-size: .8rem; font-weight: 600; letter-spacing: .35em;
+        margin-bottom: 2.5rem; text-transform: uppercase;
+      }
+      [data-theme="dark"] .ai-studio-label { color: rgba(255,255,255,.85); }
+      .ai-studio-logos {
+        position: relative; z-index: 1;
+        display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+        gap: 3rem 3.5rem;
+      }
+      .ai-logo-item {
+        display: flex; align-items: center; gap: .6rem;
+        color: var(--text-secondary);
+        opacity: .8;
+        transition: opacity .25s, color .25s, transform .25s;
+      }
+      .ai-logo-item:hover { opacity: 1; color: var(--text); transform: translateY(-2px); }
+      .ai-logo-item svg { width: 28px; height: 28px; fill: currentColor; flex-shrink: 0; }
+      .ai-logo-item .name { font-size: 1.1rem; font-weight: 600; letter-spacing: .02em; }
+      .ai-logo-item.claude .name { font-family: Georgia, 'Times New Roman', serif; font-weight: 500; }
+      [data-theme="dark"] .ai-logo-item { color: rgba(255,255,255,.55); opacity: .65; }
+      [data-theme="dark"] .ai-logo-item:hover { color: #fff; }
+      @media (max-width: 576px) {
+        .ai-studio-panel { padding: 3rem 1.25rem; }
+        .ai-studio-logos { gap: 1.75rem 2rem; }
+        .ai-logo-item svg { width: 22px; height: 22px; }
+        .ai-logo-item .name { font-size: .95rem; }
+      }
+
+      /* ===== GITHUB ACTIVITY ===== */
+      .github-card { border-radius: var(--radius); overflow-x: auto; }
+      .github-card img { display: block; min-width: 640px; width: 100%; }
 
       /* ===== PROJECTS ===== */
       .project-card { border-radius: var(--radius); overflow: hidden; color: var(--text); }
@@ -200,6 +352,30 @@
       }
       .project-card:hover .overlay { opacity: 1; }
       .overlay .badge { background: rgba(255,255,255,.2); color: #fff; font-size: .7rem; backdrop-filter: blur(4px); }
+
+      /* ===== COLLEAGUES ===== */
+      .colleague-card {
+        border-radius: var(--radius); text-align: center; padding: 2rem 1.5rem;
+        display: flex; flex-direction: column;
+      }
+      .colleague-quote-icon { font-size: 1.7rem; color: var(--primary); opacity: .35; line-height: 1; }
+      .colleague-quote {
+        color: var(--text-secondary); font-size: .88rem; font-style: italic;
+        line-height: 1.6; margin: .5rem 0 1.5rem; flex-grow: 1;
+      }
+      .colleague-avatar {
+        width: 4.5rem; height: 4.5rem; margin: 0 auto 1rem;
+        border-radius: 50%; background: var(--grad);
+        display: flex; align-items: center; justify-content: center;
+        color: #fff; font-weight: 700; font-size: 1.4rem;
+        font-family: 'Josefin Sans', sans-serif;
+      }
+      .colleague-name { font-weight: 700; color: var(--text); }
+      .colleague-role {
+        display: flex; align-items: center; justify-content: center; gap: .35rem;
+        color: var(--primary); font-size: .82rem; font-weight: 600;
+        margin-top: .3rem;
+      }
 
       /* ===== EXPERIENCE TIMELINE ===== */
       .timeline { position: relative; padding-left: 2.5rem; }
@@ -249,6 +425,18 @@
       .contact-card { border-radius: var(--radius); }
       .contact-card a { color: var(--text); text-decoration: none; }
       .contact-card a:hover { color: var(--primary); }
+      .contact-form .form-control {
+        background: var(--bg-alt); border: 1px solid var(--border); color: var(--text);
+        border-radius: .6rem; padding: .65rem .9rem;
+      }
+      .contact-form .form-control:focus {
+        background: var(--bg-alt); color: var(--text); border-color: var(--primary);
+        box-shadow: 0 0 0 .2rem rgba(79,70,229,.15);
+      }
+      .contact-form .form-control::placeholder { color: var(--text-muted); }
+      .contact-form label { font-size: .85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: .3rem; }
+      .form-status { font-size: .85rem; margin-top: .75rem; display: none; }
+      .form-status.show { display: block; }
 
       /* ===== FOOTER ===== */
       footer { background: var(--bg-alt); border-top: 1px solid var(--border); }
@@ -315,17 +503,20 @@
         </button>
         <div class="collapse navbar-collapse" id="navMenu">
           <ul class="navbar-nav ms-auto me-3 align-items-lg-center">
-            <li class="nav-item"><a class="nav-link active" href="#home" aria-current="page">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="#skills">Skills</a></li>
-            <li class="nav-item"><a class="nav-link" href="#experience">Experience</a></li>
-            <li class="nav-item"><a class="nav-link" href="#projects">Projects</a></li>
-            <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+            <li class="nav-item"><a class="nav-link active" href="#home" aria-current="page" data-bn="হোম">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="#skills" data-bn="দক্ষতা">Skills</a></li>
+            <li class="nav-item"><a class="nav-link" href="#experience" data-bn="অভিজ্ঞতা">Experience</a></li>
+            <li class="nav-item"><a class="nav-link" href="#projects" data-bn="প্রজেক্ট">Projects</a></li>
+            <li class="nav-item"><a class="nav-link" href="#contact" data-bn="যোগাযোগ">Contact</a></li>
           </ul>
           <div class="d-flex align-items-center gap-2">
+            <button id="langToggle" class="btn btn-soft-icon" aria-label="Switch language" title="বাংলা / English">
+              <span id="langToggleLabel">বাং</span>
+            </button>
             <button id="themeToggle" class="btn btn-soft-icon" aria-label="Toggle theme">
               <i class="bi bi-moon-stars"></i>
             </button>
-            <a href="Assets/MAHMUDUL-HASAN CV.pdf" class="btn btn-primary rounded-pill" download>
+            <a href="Assets/MAHMUDUL-HASAN CV.pdf" class="btn btn-primary rounded-pill" download data-bn="সিভি ডাউনলোড">
               Download CV
             </a>
           </div>
@@ -339,27 +530,33 @@
       <div class="container">
         <div class="row align-items-center justify-content-between">
           <div class="col-12 col-lg-6" data-aos="fade-right">
-            <span class="badge rounded-pill text-bg-light shadow-sm px-3 py-2 d-inline-flex align-items-center gap-2">
-              <span class="dot-pulse" aria-hidden="true"></span> Open to work
-            </span>
+            <div class="d-flex flex-wrap gap-2">
+              <span class="badge rounded-pill text-bg-light shadow-sm px-3 py-2 d-inline-flex align-items-center gap-2">
+                <span class="dot-pulse" aria-hidden="true"></span> <span data-bn="কাজের জন্য উন্মুক্ত">Open to work</span>
+              </span>
+              <span class="badge rounded-pill text-bg-light shadow-sm px-3 py-2 d-inline-flex align-items-center gap-2">
+                <i class="bi bi-globe2 text-primary"></i> <span data-bn="ঢাকা, বাংলাদেশ (GMT+6) · রিমোট কাজের জন্য প্রস্তুত">Dhaka, Bangladesh (GMT+6) &middot; Remote&#8209;ready</span>
+              </span>
+            </div>
             <h1 class="display-4 fw-bold mt-3">
-              Hi, I'm <span class="grad-text">Mahmudul Hasan</span>
+              <span data-bn="হাই, আমি ">Hi, I'm </span><span class="grad-text">Mahmudul Hasan</span>
             </h1>
             <p class="lead text-muted mb-3">
               <span class="role"></span>
             </p>
-            <p class="text-secondary">
+            <p class="text-secondary" data-bn="আধুনিক টেকনোলজি স্ট্যাক আর পরিষ্কার ডিজাইন দিয়ে রেসপনসিভ, অ্যাক্সেসিবল এবং হাই-পারফরম্যান্স ওয়েব অ্যাপ তৈরি করি।">
               Full‑Stack developer crafting responsive, accessible, and high‑performance web apps with modern stacks and clean design.
             </p>
             <div class="d-flex gap-3 mt-4">
-              <a href="#contact" class="btn btn-primary btn-lg rounded-pill">Get in touch</a>
-              <a href="#projects" class="btn btn-outline-primary btn-lg rounded-pill">View Projects</a>
+              <a href="#contact" class="btn btn-primary btn-lg rounded-pill" data-bn="যোগাযোগ করুন">Get in touch</a>
+              <a href="#projects" class="btn btn-outline-primary btn-lg rounded-pill" data-bn="প্রজেক্ট দেখুন">View Projects</a>
             </div>
             <div class="mt-4 d-flex gap-3 social-hero">
               <a href="mailto:mh66441122@gmail.com" class="icon-link" aria-label="Email"><i class="bi bi-envelope"></i></a>
               <a href="https://wa.me/8801863846300" target="_blank" rel="noopener noreferrer" class="icon-link" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
               <a href="https://www.linkedin.com/in/mahmudul-hasan-80259b374/" target="_blank" rel="noopener noreferrer me" class="icon-link" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
               <a href="https://www.facebook.com/faysal.ak0/" target="_blank" rel="noopener noreferrer me" class="icon-link" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+              <a href="https://github.com/Mahmudul07-prog" target="_blank" rel="noopener noreferrer me" class="icon-link" aria-label="GitHub"><i class="bi bi-github"></i></a>
             </div>
           </div>
           <div class="col-10 col-md-6 col-lg-5 mx-auto mt-5 mt-lg-0" data-aos="fade-left">
@@ -372,60 +569,192 @@
       </div>
     </section>
 
+    <!-- ===== ABOUT ===== -->
+    <section id="about" class="section" style="padding: 1rem 0 2.5rem;">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 text-center" data-aos="fade-up">
+            <p class="about-lead" data-bn="আমি ঢাকা, বাংলাদেশ থেকে একজন ফুল-স্ট্যাক ডেভেলপার, ASP.NET Core, React আর আধুনিক JavaScript-এ specialized। আমি একটা intensive ৭৮৮-ঘণ্টার enterprise development প্রোগ্রাম শেষ করেছি এবং বর্তমানে একটা healthcare ERP সিস্টেমের জন্য production software তৈরি করছি। পরিষ্কার, অ্যাক্সেসিবল কোড লেখা আর জটিল requirement-কে reliable বাস্তব অ্যাপ্লিকেশনে রূপান্তর করা আমার ভালো লাগে।">
+              I'm a full‑stack developer based in Dhaka, Bangladesh, specializing in ASP.NET Core, React, and modern JavaScript. I completed an intensive 788‑hour enterprise development program and I'm currently building production software for a healthcare ERP system. I care about clean, accessible code and enjoy turning complex requirements into reliable, real‑world applications.
+            </p>
+            <div class="about-tags">
+              <span class="about-tag"><i class="bi bi-check-circle-fill"></i> <span data-bn="পরিশ্রমী ও দায়িত্বশীল">Hardworking &amp; Responsible</span></span>
+              <span class="about-tag"><i class="bi bi-check-circle-fill"></i> <span data-bn="শক্তিশালী সমস্যা সমাধানকারী">Strong Problem&#8209;Solver</span></span>
+              <span class="about-tag"><i class="bi bi-check-circle-fill"></i> <span data-bn="দ্রুত শিক্ষার্থী">Quick Learner</span></span>
+              <span class="about-tag"><i class="bi bi-check-circle-fill"></i> <span data-bn="সূক্ষ্ম মনোযোগী">Detail&#8209;Oriented</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== STATS ===== -->
+    <section class="pt-0" style="padding: 0 0 3rem;">
+      <div class="container">
+        <div class="stats-bar" data-aos="fade-up">
+          <div class="stat-item">
+            <div class="stat-num" data-count="9">0</div>
+            <div class="stat-label" data-bn="সম্পন্ন প্রজেক্ট">Projects Completed</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num" data-count="8">0</div>
+            <div class="stat-label" data-bn="মূল প্রযুক্তি">Core Technologies</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num" data-count="788">0</div>
+            <div class="stat-label" data-bn="প্রশিক্ষণ ঘণ্টা">Training Hours</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num" data-count="5">0</div>
+            <div class="stat-label" data-bn="দক্ষ AI টুলস">AI Tools Mastered</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== SKILLS ===== -->
-    <section id="skills" class="section">
+    <section id="skills" class="section pt-0">
+      <div class="container">
+        <div class="skills-panel" data-aos="fade-up">
+          <div class="ai-studio-smoke" aria-hidden="true"></div>
+          <span class="ai-studio-sparkle" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 0c.6 4.2 1.8 7 3.3 8.7C17 10.2 19.8 11.4 24 12c-4.2.6-7 1.8-8.7 3.3C13.8 17 12.6 19.8 12 24c-.6-4.2-1.8-7-3.3-8.7C7 13.8 4.2 12.6 0 12c4.2-.6 7-1.8 8.7-3.3C10.2 7 11.4 4.2 12 0z"/></svg>
+          </span>
+          <div class="skills-panel-head">
+            <div class="eyebrow" data-bn="দক্ষতা">Skills</div>
+            <h3 data-bn="একটি আধুনিক ফুল-স্ট্যাক টুলচেইন">A Modern, Full&#8209;Stack Toolchain</h3>
+            <p data-bn="প্রতিদিনের কাজে ব্যবহার করা টেকনোলজি — markup ও styling থেকে শুরু করে backend API আর ডাটাবেজ পর্যন্ত।">Technologies I reach for daily — from markup and styling to backend APIs and databases.</p>
+          </div>
+          <div class="marquee-track-wrap">
+            <div class="marquee-track">
+              <!-- set 1 -->
+              <div class="skill-chip"><i class="bi bi-filetype-html"></i><span class="skill-name">HTML & CSS</span></div>
+              <div class="skill-chip"><i class="bi bi-filetype-js"></i><span class="skill-name">JavaScript</span></div>
+              <div class="skill-chip"><i class="bi bi-server"></i><span class="skill-name">Node.js</span></div>
+              <div class="skill-chip"><i class="bi bi-filetype-cs"></i><span class="skill-name">C#</span></div>
+              <div class="skill-chip"><i class="bi bi-triangle"></i><span class="skill-name">Angular</span></div>
+              <div class="skill-chip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                  <circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none"/>
+                  <ellipse cx="12" cy="12" rx="10" ry="4"/>
+                  <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/>
+                  <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/>
+                </svg>
+                <span class="skill-name">React.js</span>
+              </div>
+              <div class="skill-chip"><i class="bi bi-database"></i><span class="skill-name">SQL Server</span></div>
+              <div class="skill-chip"><i class="bi bi-cpu"></i><span class="skill-name">ASP.NET Core</span></div>
+              <!-- set 2 (duplicate for seamless loop) -->
+              <div class="skill-chip"><i class="bi bi-filetype-html"></i><span class="skill-name">HTML & CSS</span></div>
+              <div class="skill-chip"><i class="bi bi-filetype-js"></i><span class="skill-name">JavaScript</span></div>
+              <div class="skill-chip"><i class="bi bi-server"></i><span class="skill-name">Node.js</span></div>
+              <div class="skill-chip"><i class="bi bi-filetype-cs"></i><span class="skill-name">C#</span></div>
+              <div class="skill-chip"><i class="bi bi-triangle"></i><span class="skill-name">Angular</span></div>
+              <div class="skill-chip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                  <circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none"/>
+                  <ellipse cx="12" cy="12" rx="10" ry="4"/>
+                  <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/>
+                  <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/>
+                </svg>
+                <span class="skill-name">React.js</span>
+              </div>
+              <div class="skill-chip"><i class="bi bi-database"></i><span class="skill-name">SQL Server</span></div>
+              <div class="skill-chip"><i class="bi bi-cpu"></i><span class="skill-name">ASP.NET Core</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ai-studio-panel mt-5" data-aos="fade-up" data-aos-delay="50">
+          <div class="ai-studio-smoke" aria-hidden="true"></div>
+          <span class="ai-studio-sparkle" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 0c.6 4.2 1.8 7 3.3 8.7C17 10.2 19.8 11.4 24 12c-4.2.6-7 1.8-8.7 3.3C13.8 17 12.6 19.8 12 24c-.6-4.2-1.8-7-3.3-8.7C7 13.8 4.2 12.6 0 12c4.2-.6 7-1.8 8.7-3.3C10.2 7 11.4 4.2 12 0z"/></svg>
+          </span>
+          <div class="ai-studio-label">AI Studio</div>
+          <div class="ai-studio-logos">
+            <div class="ai-logo-item openai" title="OpenAI / ChatGPT">
+              <svg viewBox="0 0 24 24">
+                <ellipse cx="12" cy="5.6" rx="2.5" ry="4.3"/>
+                <ellipse cx="12" cy="5.6" rx="2.5" ry="4.3" transform="rotate(60 12 12)"/>
+                <ellipse cx="12" cy="5.6" rx="2.5" ry="4.3" transform="rotate(120 12 12)"/>
+                <ellipse cx="12" cy="5.6" rx="2.5" ry="4.3" transform="rotate(180 12 12)"/>
+                <ellipse cx="12" cy="5.6" rx="2.5" ry="4.3" transform="rotate(240 12 12)"/>
+                <ellipse cx="12" cy="5.6" rx="2.5" ry="4.3" transform="rotate(300 12 12)"/>
+                <circle cx="12" cy="12" r="2" style="fill: var(--bg-alt)"/>
+              </svg>
+              <span class="name">OpenAI</span>
+            </div>
+            <div class="ai-logo-item claude" title="Claude by Anthropic">
+              <svg viewBox="0 0 24 24">
+                <rect x="11" y="2" width="2" height="10" rx="1"/>
+                <rect x="11" y="2" width="2" height="10" rx="1" transform="rotate(51.4 12 12)"/>
+                <rect x="11" y="2" width="2" height="10" rx="1" transform="rotate(102.8 12 12)"/>
+                <rect x="11" y="2" width="2" height="10" rx="1" transform="rotate(154.3 12 12)"/>
+                <rect x="11" y="2" width="2" height="10" rx="1" transform="rotate(205.7 12 12)"/>
+                <rect x="11" y="2" width="2" height="10" rx="1" transform="rotate(257.1 12 12)"/>
+                <rect x="11" y="2" width="2" height="10" rx="1" transform="rotate(308.6 12 12)"/>
+              </svg>
+              <span class="name">Claude</span>
+            </div>
+            <div class="ai-logo-item" title="Google Gemini">
+              <svg viewBox="0 0 24 24"><path d="M12 0c.6 4.2 1.8 7 3.3 8.7C17 10.2 19.8 11.4 24 12c-4.2.6-7 1.8-8.7 3.3C13.8 17 12.6 19.8 12 24c-.6-4.2-1.8-7-3.3-8.7C7 13.8 4.2 12.6 0 12c4.2-.6 7-1.8 8.7-3.3C10.2 7 11.4 4.2 12 0z"/></svg>
+              <span class="name">Gemini</span>
+            </div>
+            <div class="ai-logo-item" title="Google AI Studio">
+              <svg viewBox="0 0 24 24"><path d="M12 2 L16.5 10 L12 22 L7.5 10 Z"/></svg>
+              <span class="name">AI Studio</span>
+            </div>
+            <div class="ai-logo-item" title="GitHub Copilot">
+              <i class="bi bi-github" style="font-size:1.6rem"></i>
+              <span class="name">Copilot</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== COLLEAGUES ===== -->
+    <section id="colleagues" class="section pt-0">
       <div class="container">
         <div class="text-center mb-5" data-aos="fade-up">
-          <h2 class="fw-bold section-title">Skills</h2>
-          <p class="text-secondary mt-3">A balanced mix of frontend and backend</p>
+          <h2 class="fw-bold section-title" data-bn="যাদের সাথে কাজ করেছি">Worked With</h2>
+          <p class="text-secondary mt-3" data-bn="যেসব সহকর্মীর সাথে real প্রজেক্টে কাজ করেছি">Colleagues I've collaborated with on real projects</p>
         </div>
-        <div class="row g-4">
-          <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in">
-            <div class="skill-card glass gradient-border text-center p-4">
-              <div class="radial-progress mx-auto" data-percent="92"><span class="value">0%</span></div>
-              <div class="mt-3 fw-semibold">HTML & CSS</div>
+        <div class="row g-4 justify-content-center">
+          <div class="col-md-6 col-lg-3" data-aos="zoom-in">
+            <div class="colleague-card glass gradient-border h-100">
+              <i class="bi bi-quote colleague-quote-icon"></i>
+              <p class="colleague-quote" data-bn="মাহমুদুল একজন পরিশ্রমী এবং দায়িত্বশীল ডেভেলপার। কাজ শুরুর আগে তিনি সবসময় requirement গুলো স্পষ্টভাবে বোঝার চেষ্টা করেন।">Mahmudul is a hardworking and responsible developer. He always tries to understand the requirements clearly before starting his work.</p>
+              <div class="colleague-avatar">SR</div>
+              <div class="colleague-name">Shohanur Rahman</div>
+              <div class="colleague-role"><i class="bi bi-briefcase-fill"></i> <span data-bn="সিনিয়র ডেভেলপার">Senior Developer</span></div>
             </div>
           </div>
-          <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="50">
-            <div class="skill-card glass gradient-border text-center p-4">
-              <div class="radial-progress mx-auto" data-percent="86"><span class="value">0%</span></div>
-              <div class="mt-3 fw-semibold">JavaScript</div>
+          <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="100">
+            <div class="colleague-card glass gradient-border h-100">
+              <i class="bi bi-quote colleague-quote-icon"></i>
+              <p class="colleague-quote" data-bn="তার problem-solving skill খুব ভালো এবং তিনি সবসময় challenging task নিতে প্রস্তুত থাকেন। তার debugging আর troubleshooting করার approach টা খুবই সহায়ক।">He has good problem-solving skills and is always willing to take on challenging tasks. His debugging and troubleshooting approach is very helpful.</p>
+              <div class="colleague-avatar">AI</div>
+              <div class="colleague-name">Aminul Islam</div>
+              <div class="colleague-role"><i class="bi bi-briefcase-fill"></i> <span data-bn="মিড-লেভেল ডেভেলপার">Mid‑Level Developer</span></div>
             </div>
           </div>
-          <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="100">
-            <div class="skill-card glass gradient-border text-center p-4">
-              <div class="radial-progress mx-auto" data-percent="78"><span class="value">0%</span></div>
-              <div class="mt-3 fw-semibold">Node.js</div>
+          <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="200">
+            <div class="colleague-card glass gradient-border h-100">
+              <i class="bi bi-quote colleague-quote-icon"></i>
+              <p class="colleague-quote" data-bn="মাহমুদুল খুব দ্রুত শিখতে পারে এবং নতুন টেকনোলজি ও প্রজেক্টের চাহিদার সাথে ভালোভাবে মানিয়ে নেয়। টিমের সাথেও সে খুব সহযোগিতামূলক।">Mahmudul is a quick learner and adapts well to new technologies and project requirements. He is also very cooperative with the team.</p>
+              <div class="colleague-avatar">RK</div>
+              <div class="colleague-name">Md Rezaul Karim</div>
+              <div class="colleague-role"><i class="bi bi-briefcase-fill"></i> <span data-bn="মিড-লেভেল ডেভেলপার">Mid‑Level Developer</span></div>
             </div>
           </div>
-          <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="150">
-            <div class="skill-card glass gradient-border text-center p-4">
-              <div class="radial-progress mx-auto" data-percent="74"><span class="value">0%</span></div>
-              <div class="mt-3 fw-semibold">C#</div>
-            </div>
-          </div>
-          <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="200">
-            <div class="skill-card glass gradient-border text-center p-4">
-              <div class="radial-progress mx-auto" data-percent="68"><span class="value">0%</span></div>
-              <div class="mt-3 fw-semibold">Angular</div>
-            </div>
-          </div>
-          <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="250">
-            <div class="skill-card glass gradient-border text-center p-4">
-              <div class="radial-progress mx-auto" data-percent="82"><span class="value">0%</span></div>
-              <div class="mt-3 fw-semibold">React.js</div>
-            </div>
-          </div>
-          <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="300">
-            <div class="skill-card glass gradient-border text-center p-4">
-              <div class="radial-progress mx-auto" data-percent="76"><span class="value">0%</span></div>
-              <div class="mt-3 fw-semibold">SQL Server</div>
-            </div>
-          </div>
-          <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="350">
-            <div class="skill-card glass gradient-border text-center p-4">
-              <div class="radial-progress mx-auto" data-percent="72"><span class="value">0%</span></div>
-              <div class="mt-3 fw-semibold">ASP.NET</div>
+          <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="300">
+            <div class="colleague-card glass gradient-border h-100">
+              <i class="bi bi-quote colleague-quote-icon"></i>
+              <p class="colleague-quote" data-bn="তিনি নিয়মিত তার assigned task খুব মনোযোগ দিয়ে সম্পন্ন করেন এবং চাপের মধ্যেও positive attitude ধরে রাখেন।">He consistently completes his assigned tasks with good attention to detail and maintains a positive attitude even under pressure.</p>
+              <div class="colleague-avatar">MB</div>
+              <div class="colleague-name">Masud Billah</div>
+              <div class="colleague-role"><i class="bi bi-briefcase-fill"></i> <span data-bn="সিনিয়র ডেভেলপার">Senior Developer</span></div>
             </div>
           </div>
         </div>
@@ -436,15 +765,15 @@
     <section id="experience" class="section" style="background: var(--bg-alt);">
       <div class="container">
         <div class="text-center mb-5" data-aos="fade-up">
-          <h2 class="fw-bold section-title">Experience & Training</h2>
-          <p class="text-secondary mt-3">My professional journey so far</p>
+          <h2 class="fw-bold section-title" data-bn="অভিজ্ঞতা ও প্রশিক্ষণ">Experience & Training</h2>
+          <p class="text-secondary mt-3" data-bn="আমার পেশাগত জীবনের যাত্রা">My professional journey so far</p>
         </div>
 
         <div class="row g-5">
           <!-- Left: Professional Experience -->
           <div class="col-lg-6" data-aos="fade-right">
             <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
-              <i class="bi bi-briefcase-fill text-primary"></i> Professional Experience
+              <i class="bi bi-briefcase-fill text-primary"></i> <span data-bn="পেশাগত অভিজ্ঞতা">Professional Experience</span>
             </h5>
             <div class="timeline">
 
@@ -454,8 +783,8 @@
                 <div class="timeline-card">
                   <div class="d-flex align-items-start justify-content-between flex-wrap gap-2">
                     <div>
-                      <span class="timeline-badge"><i class="bi bi-circle-fill" style="font-size:.5rem"></i> Ongoing</span>
-                      <div class="timeline-title">Software Developer</div>
+                      <span class="timeline-badge"><i class="bi bi-circle-fill" style="font-size:.5rem"></i> <span data-bn="চলমান">Ongoing</span></span>
+                      <div class="timeline-title" data-bn="সফটওয়্যার ডেভেলপার">Software Developer</div>
                       <div class="timeline-org">
                         <i class="bi bi-building me-1"></i>
                         Global MediKlaud (BD) Limited
@@ -487,7 +816,7 @@
           <!-- Right: Training -->
           <div class="col-lg-6" data-aos="fade-left">
             <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
-              <i class="bi bi-mortarboard-fill text-primary"></i> Professional Training
+              <i class="bi bi-mortarboard-fill text-primary"></i> <span data-bn="পেশাগত প্রশিক্ষণ">Professional Training</span>
             </h5>
             <div class="timeline">
 
@@ -497,7 +826,7 @@
                 <div class="timeline-card">
                   <div class="d-flex align-items-start justify-content-between flex-wrap gap-2">
                     <div>
-                      <span class="timeline-badge"><i class="bi bi-award-fill" style="font-size:.7rem"></i> Certified</span>
+                      <span class="timeline-badge"><i class="bi bi-award-fill" style="font-size:.7rem"></i> <span data-bn="সার্টিফাইড">Certified</span></span>
                       <div class="timeline-title">Enterprise System Analysis & Design — C#.NET (ESAD-CS)</div>
                       <div class="timeline-org">
                         <i class="bi bi-bank me-1"></i>
@@ -538,7 +867,7 @@
                   <span style="font-size:2.5rem">🎯</span>
                 </div>
                 <div>
-                  <h5 class="fw-bold mb-2">Career Objective</h5>
+                  <h5 class="fw-bold mb-2" data-bn="ক্যারিয়ার লক্ষ্য">Career Objective</h5>
                   <p class="text-secondary mb-0">
                     I've completed a course on ASP.NET with C#, where I learned to build web applications using
                     technologies like ASP.NET Core, MVC, C#, and SQL Server. I've worked on practical projects during
@@ -559,8 +888,8 @@
     <section id="projects" class="section pt-5">
       <div class="container">
         <div class="text-center mb-5" data-aos="fade-up">
-          <h2 class="fw-bold section-title">Projects</h2>
-          <p class="text-secondary mt-3">Selected work I'm proud of</p>
+          <h2 class="fw-bold section-title" data-bn="প্রজেক্ট">Projects</h2>
+          <p class="text-secondary mt-3" data-bn="আমার প্রিয় কিছু কাজ">Selected work I'm proud of</p>
         </div>
         <div class="row g-4">
           <div class="col-md-6 col-lg-4" data-aos="fade-up">
@@ -574,7 +903,7 @@
               </div>
               <div class="p-4">
                 <h5 class="mb-1">HTML5 & CSS3 — Interactive Notebook</h5>
-                <p class="text-secondary small mb-0">Practical UI with component patterns</p>
+                <p class="text-secondary small mb-0" data-bn="একটা multi-chapter interactive learning notebook, reusable ও component-driven UI pattern দিয়ে তৈরি।">A multi‑chapter interactive learning notebook built with reusable, component‑driven UI patterns.</p>
               </div>
             </a>
           </div>
@@ -591,7 +920,7 @@
               </div>
               <div class="p-4">
                 <h5 class="mb-1">Event Management — Reports & Data</h5>
-                <p class="text-secondary small mb-0">Dynamic reporting and data access</p>
+                <p class="text-secondary small mb-0" data-bn="Enterprise event-management মডিউল, live SQL Server ডেটা থেকে সরাসরি dynamic Crystal Reports তৈরি করে।">Enterprise event‑management module generating dynamic Crystal Reports directly from live SQL Server data.</p>
               </div>
             </a>
           </div>
@@ -607,7 +936,7 @@
               </div>
               <div class="p-4">
                 <h5 class="mb-1">Coffee Management System</h5>
-                <p class="text-secondary small mb-0">Coffee Product Showcase</p>
+                <p class="text-secondary small mb-0" data-bn="একটা coffee brand-এর জন্য mobile-first দিয়ে বানানো responsive product showcase আর management সাইট।">A responsive product showcase and management site for a coffee brand, built mobile‑first.</p>
               </div>
             </a>
           </div>
@@ -624,7 +953,7 @@
               </div>
               <div class="p-4">
                 <h5 class="mb-1">eCommerce (Node.js)</h5>
-                <p class="text-secondary small mb-0">Product catalog, cart, secure checkout</p>
+                <p class="text-secondary small mb-0" data-bn="সম্পূর্ণ Node.js/MongoDB স্টোরফ্রন্ট — product catalog, cart, আর secure checkout সবকিছু end-to-end।">A full Node.js/MongoDB storefront covering product catalog, cart, and secure checkout end‑to‑end.</p>
               </div>
             </a>
           </div>
@@ -640,7 +969,7 @@
               </div>
               <div class="p-4">
                 <h5 class="mb-1">Live‑Chatting Services</h5>
-                <p class="text-secondary small mb-0">Live messaging with a minimal, clean UI</p>
+                <p class="text-secondary small mb-0" data-bn="তাৎক্ষণিক delivery আর minimal, distraction-free interface সহ real-time messaging অ্যাপ।">Real‑time messaging app with instant delivery and a minimal, distraction‑free interface.</p>
               </div>
             </a>
           </div>
@@ -657,7 +986,7 @@
               </div>
               <div class="p-4">
                 <h5 class="mb-1">Device‑Management System</h5>
-                <p class="text-secondary small mb-0">CRUD, roles, and organized data workflows</p>
+                <p class="text-secondary small mb-0" data-bn="Role-based ASP.NET Core সিস্টেম, পুরোপুরি CRUD আর structured workflow দিয়ে device inventory পরিচালনার জন্য।">Role‑based ASP.NET Core system for managing device inventory with full CRUD and structured workflows.</p>
               </div>
             </a>
           </div>
@@ -674,7 +1003,7 @@
               </div>
               <div class="p-4">
                 <h5 class="mb-1">Full‑Stack eCommerce (Movie Ticket)</h5>
-                <p class="text-secondary small mb-0">Ticket catalog, cart, secure checkout</p>
+                <p class="text-secondary small mb-0" data-bn="Role-based authentication আর secure checkout সহ end-to-end movie ticket booking প্ল্যাটফর্ম।">End‑to‑end movie ticket booking platform with role‑based auth and secure checkout.</p>
               </div>
             </a>
           </div>
@@ -691,7 +1020,7 @@
               </div>
               <div class="p-4">
                 <h5 class="mb-1">Instructor Management System</h5>
-                <p class="text-secondary small mb-0">Instructor TypeScript React SPA</p>
+                <p class="text-secondary small mb-0" data-bn="TypeScript + React দিয়ে বানানো SPA, একটা ASP.NET Core API-এর উপর ভিত্তি করে instructor পরিচালনার জন্য।">TypeScript + React SPA for managing instructors, backed by an ASP.NET Core API.</p>
               </div>
             </a>
           </div>
@@ -708,7 +1037,7 @@
               </div>
               <div class="p-4">
                 <h5 class="mb-1">Master‑Detail SPA</h5>
-                <p class="text-secondary small mb-0">Async CRUD with a smooth user experience</p>
+                <p class="text-secondary small mb-0" data-bn="Async master-detail CRUD সহ single-page অ্যাপ, কোনো full-page reload ছাড়াই।">Single‑page app with async master‑detail CRUD and zero full‑page reloads.</p>
               </div>
             </a>
           </div>
@@ -716,49 +1045,98 @@
       </div>
     </section>
 
+    <!-- ===== GITHUB ACTIVITY ===== -->
+    <section id="github-activity" class="section pt-0">
+      <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+          <h2 class="fw-bold section-title" data-bn="GitHub কার্যক্রম">GitHub Activity</h2>
+          <p class="text-secondary mt-3" data-bn="আমার contribution history-র লাইভ ছবি">A live look at my contribution history</p>
+        </div>
+        <div class="github-card glass gradient-border p-4 text-center" data-aos="fade-up">
+          <a href="https://github.com/Mahmudul07-prog" target="_blank" rel="noopener noreferrer">
+            <img src="https://ghchart.rshah.org/4f46e5/Mahmudul07-prog" alt="GitHub contribution graph for Mahmudul07-prog" loading="lazy" decoding="async" />
+          </a>
+          <a href="https://github.com/Mahmudul07-prog" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary rounded-pill mt-3">
+            <i class="bi bi-github me-2"></i><span data-bn="GitHub প্রোফাইল দেখুন">View GitHub Profile</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== CONTACT ===== -->
     <section id="contact" class="section" style="background: var(--bg-alt);">
       <div class="container">
-        <div class="row justify-content-center" data-aos="fade-up">
-          <div class="col-lg-8">
-            <div class="contact-card glass p-4 p-md-5">
-              <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
-                <div>
-                  <h3 class="fw-bold mb-2">Let's build something great</h3>
-                  <p class="text-secondary mb-4">
-                    I'd love to hear about your project or role. Reach out via email or WhatsApp.
-                  </p>
-                  <ul class="list-unstyled mb-0">
-                    <li class="mb-2">
-                      <i class="bi bi-geo-alt-fill me-2 text-primary"></i>
-                      272/6 Panir Tanki Mor, West Agargaon, Taltola, Dhaka‑1207, Bangladesh
-                    </li>
-                    <li class="mb-2">
-                      <i class="bi bi-telephone-fill me-2 text-primary"></i>
-                      <a href="tel:+8801863846300">+880 1863‑846300</a>
-                    </li>
-                    <li>
-                      <i class="bi bi-send-fill me-2 text-primary"></i>
-                      <a href="mailto:faysalkrock2@gmail.com">faysalkrock2@gmail.com</a>
-                    </li>
-                  </ul>
-                </div>
-                <div class="d-flex flex-column gap-2">
-                  <a href="mailto:faysalkrock2@gmail.com?subject=Project%20inquiry%20from%20Portfolio" class="btn btn-primary rounded-pill">
-                    <i class="bi bi-envelope me-2"></i>Email Me
-                  </a>
-                  <a href="https://wa.me/8801863846300" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary rounded-pill">
-                    <i class="bi bi-whatsapp me-2"></i>WhatsApp
-                  </a>
-                  <a href="Assets/MAHMUDUL-HASAN CV.pdf" class="btn btn-soft rounded-pill" download>
-                    <i class="bi bi-download me-2"></i>Download CV
-                  </a>
-                </div>
+        <div class="text-center mb-5" data-aos="fade-up">
+          <h2 class="fw-bold section-title" data-bn="যোগাযোগ">Contact</h2>
+          <p class="text-secondary mt-3" data-bn="চলুন একসাথে দারুণ কিছু তৈরি করি">Let's build something great together</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+          <div class="col-lg-5" data-aos="fade-right">
+            <div class="contact-card glass p-4 p-md-5 h-100">
+              <h3 class="fw-bold mb-2" data-bn="যোগাযোগ করুন">Get in touch</h3>
+              <p class="text-secondary mb-4" data-bn="আপনার প্রজেক্ট বা কোনো role সম্পর্কে শুনতে চাই। ইমেইল, WhatsApp, বা form-এর মাধ্যমে যোগাযোগ করুন।">
+                I'd love to hear about your project or role. Reach out via email, WhatsApp, or the form.
+              </p>
+              <ul class="list-unstyled mb-4">
+                <li class="mb-2">
+                  <i class="bi bi-geo-alt-fill me-2 text-primary"></i>
+                  272/6 Panir Tanki Mor, West Agargaon, Taltola, Dhaka‑1207, Bangladesh
+                </li>
+                <li class="mb-2">
+                  <i class="bi bi-telephone-fill me-2 text-primary"></i>
+                  <a href="tel:+8801863846300">+880 1863‑846300</a>
+                </li>
+                <li>
+                  <i class="bi bi-send-fill me-2 text-primary"></i>
+                  <a href="mailto:faysalkrock2@gmail.com">faysalkrock2@gmail.com</a>
+                </li>
+              </ul>
+              <div class="d-flex flex-wrap gap-2">
+                <a href="mailto:faysalkrock2@gmail.com?subject=Project%20inquiry%20from%20Portfolio" class="btn btn-primary rounded-pill">
+                  <i class="bi bi-envelope me-2"></i><span data-bn="ইমেইল করুন">Email Me</span>
+                </a>
+                <a href="https://wa.me/8801863846300" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary rounded-pill">
+                  <i class="bi bi-whatsapp me-2"></i>WhatsApp
+                </a>
+                <a href="Assets/MAHMUDUL-HASAN CV.pdf" class="btn btn-soft rounded-pill" download>
+                  <i class="bi bi-download me-2"></i><span data-bn="সিভি ডাউনলোড">Download CV</span>
+                </a>
               </div>
             </div>
-            <p class="text-center small text-secondary mt-3">
-              Prefer a quick call? Send me a message and I'll schedule one.
-            </p>
+          </div>
+          <div class="col-lg-6" data-aos="fade-left">
+            <div class="contact-card glass p-4 p-md-5 h-100">
+              <h3 class="fw-bold mb-2" data-bn="মেসেজ পাঠান">Send a message</h3>
+              <p class="text-secondary mb-4" data-bn="সাধারণত এক দিনের মধ্যেই রিপ্লাই দিই।">I usually reply within a day.</p>
+              <form class="contact-form" id="contactForm" action="https://formsubmit.co/faysalkrock2@gmail.com" method="POST">
+                <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
+                <input type="hidden" name="_subject" value="New message from Portfolio Contact Form" />
+                <input type="hidden" name="_template" value="table" />
+                <input type="hidden" name="_captcha" value="false" />
+                <div class="row g-3">
+                  <div class="col-sm-6">
+                    <label for="cfName" data-bn="নাম">Name</label>
+                    <input type="text" class="form-control" id="cfName" name="name" placeholder="Your name" data-bn-placeholder="আপনার নাম" required />
+                  </div>
+                  <div class="col-sm-6">
+                    <label for="cfEmail" data-bn="ইমেইল">Email</label>
+                    <input type="email" class="form-control" id="cfEmail" name="email" placeholder="you@email.com" required />
+                  </div>
+                  <div class="col-12">
+                    <label for="cfSubject" data-bn="বিষয়">Subject</label>
+                    <input type="text" class="form-control" id="cfSubject" name="subject" placeholder="What's this about?" data-bn-placeholder="কী বিষয়ে বলতে চান?" />
+                  </div>
+                  <div class="col-12">
+                    <label for="cfMessage" data-bn="মেসেজ">Message</label>
+                    <textarea class="form-control" id="cfMessage" name="message" rows="4" placeholder="Tell me a bit about your project or role..." data-bn-placeholder="আপনার প্রজেক্ট বা role সম্পর্কে কিছু বলুন..." required></textarea>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary rounded-pill mt-4" id="cfSubmit">
+                  <i class="bi bi-send me-2"></i><span data-bn="মেসেজ পাঠান">Send Message</span>
+                </button>
+                <div class="form-status" id="cfStatus"></div>
+              </form>
+            </div>
           </div>
         </div>
       </div>
@@ -773,7 +1151,7 @@
           <a href="https://www.linkedin.com/in/mahmudul-hasan-80259b374/" target="_blank" rel="noopener noreferrer me" class="icon-link" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
           <a href="https://www.facebook.com/faysal.ak0/" target="_blank" rel="noopener noreferrer me" class="icon-link" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
         </div>
-        <p class="mb-0 text-secondary">© <span id="year"></span> Mahmudul Hasan — All Rights Reserved.</p>
+        <p class="mb-0 text-secondary">© <span id="year"></span> Mahmudul Hasan — <span data-bn="সর্বস্বত্ব সংরক্ষিত।">All Rights Reserved.</span></p>
       </div>
     </footer>
 
@@ -793,6 +1171,38 @@
       (function() {
         const y = document.getElementById('year');
         if (y) y.textContent = new Date().getFullYear();
+      })();
+
+      // Bangla / English language toggle
+      (function() {
+        const btn = document.getElementById('langToggle');
+        const label = document.getElementById('langToggleLabel');
+        if (!btn || !label) return;
+
+        const textEls = document.querySelectorAll('[data-bn]');
+        const placeholderEls = document.querySelectorAll('[data-bn-placeholder]');
+
+        // Cache original English text/placeholders once, up front
+        textEls.forEach(el => { if (!el.hasAttribute('data-en')) el.setAttribute('data-en', el.textContent); });
+        placeholderEls.forEach(el => { if (!el.hasAttribute('data-en-placeholder')) el.setAttribute('data-en-placeholder', el.getAttribute('placeholder') || ''); });
+
+        function setLang(lang) {
+          textEls.forEach(el => {
+            el.textContent = lang === 'bn' ? el.getAttribute('data-bn') : el.getAttribute('data-en');
+          });
+          placeholderEls.forEach(el => {
+            el.setAttribute('placeholder', lang === 'bn' ? el.getAttribute('data-bn-placeholder') : el.getAttribute('data-en-placeholder'));
+          });
+          document.documentElement.setAttribute('lang', lang === 'bn' ? 'bn' : 'en');
+          label.textContent = lang === 'bn' ? 'EN' : 'বাং';
+          btn.setAttribute('aria-label', lang === 'bn' ? 'Switch to English' : 'বাংলায় দেখুন');
+          localStorage.setItem('lang', lang);
+        }
+
+        setLang(localStorage.getItem('lang') || 'en');
+        btn.addEventListener('click', () => {
+          setLang(document.documentElement.getAttribute('lang') === 'bn' ? 'en' : 'bn');
+        });
       })();
 
       // Theme toggle
@@ -839,6 +1249,54 @@
         btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
       })();
 
+      // Contact form (AJAX submit via FormSubmit, no page reload)
+      (function() {
+        const form = document.getElementById('contactForm');
+        const status = document.getElementById('cfStatus');
+        const btn = document.getElementById('cfSubmit');
+        if (!form || !status || !btn) return;
+
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          if (form.querySelector('[name="_honey"]').value) return; // bot caught by honeypot
+
+          const originalHTML = btn.innerHTML;
+          btn.disabled = true;
+          btn.innerHTML = 'Sending...';
+          status.className = 'form-status show';
+          status.textContent = '';
+
+          try {
+            const res = await fetch(form.action, {
+              method: 'POST',
+              body: new FormData(form),
+              headers: { Accept: 'application/json' }
+            });
+            if (!res.ok) throw new Error('Request failed');
+            const bodyText = await res.text();
+            const needsActivation = /needs activation|check your email/i.test(bodyText);
+            const blockedFileProtocol = /unable to submit form|browsed as html files/i.test(bodyText);
+            if (needsActivation) {
+              status.textContent = 'Almost there — this form needs a one-time activation. Please check faysalkrock2@gmail.com (including spam) for an email from FormSubmit and click "Activate Form", then try sending again.';
+              status.style.color = '#f59e0b';
+            } else if (blockedFileProtocol) {
+              status.textContent = 'This form only works when the site is served over http(s) — it will work once deployed. (Opening the file directly from your computer will not send the message.)';
+              status.style.color = '#f59e0b';
+            } else {
+              status.textContent = "Thanks! Your message has been sent — I'll get back to you soon.";
+              status.style.color = '#22c55e';
+              form.reset();
+            }
+          } catch (err) {
+            status.textContent = 'Something went wrong. Please email me directly at faysalkrock2@gmail.com.';
+            status.style.color = '#ef4444';
+          } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalHTML;
+          }
+        });
+      })();
+
       // Smooth anchor
       (function() {
         document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach(link => {
@@ -883,19 +1341,17 @@
         loop();
       })();
 
-      // Radial progress
+      // Stats counter
       (function() {
-        const rings = document.querySelectorAll('.radial-progress');
-        if (!rings.length) return;
+        const nums = document.querySelectorAll('.stat-num');
+        if (!nums.length) return;
         const animate = el => {
-          const target = parseFloat(el.getAttribute('data-percent') || '0');
-          const valueEl = el.querySelector('.value');
+          const target = parseFloat(el.getAttribute('data-count') || '0');
           let current = 0;
           const step = () => {
-            current += (target - current) * 0.1;
+            current += (target - current) * 0.12;
             if (Math.abs(target - current) < 0.5) current = target;
-            el.style.setProperty('--p', current);
-            if (valueEl) valueEl.textContent = Math.round(current) + '%';
+            el.textContent = Math.round(current) + '+';
             if (current < target) requestAnimationFrame(step);
           };
           requestAnimationFrame(step);
@@ -905,7 +1361,7 @@
             if (entry.isIntersecting) { animate(entry.target); obs.unobserve(entry.target); }
           });
         }, { threshold: 0.35 });
-        rings.forEach(r => io.observe(r));
+        nums.forEach(n => io.observe(n));
       })();
     </script>
   </body>
