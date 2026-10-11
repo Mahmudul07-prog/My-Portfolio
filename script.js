@@ -311,8 +311,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const maxScroll = doc.scrollHeight - doc.clientHeight;
       const progress = maxScroll > 0 ? Math.min(1, Math.max(0, window.scrollY / maxScroll)) : 0;
 
-      // Scroll progression: head visible at top (0%), translating up so body & feet are revealed as you scroll down
-      const scrollShift = progress * -38;
+      // Scroll progression: subtle vertical gliding on scroll
+      const scrollShift = progress * -18;
 
       charImg.style.transform = `translate3d(${mouseX.toFixed(2)}px, calc(${scrollShift.toFixed(2)}% + ${mouseY.toFixed(2)}px), 0)`;
 

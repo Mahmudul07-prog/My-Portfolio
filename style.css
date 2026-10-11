@@ -384,6 +384,10 @@ img {
   width: 100%;
 }
 
+.social-hero {
+  justify-content: center;
+}
+
 .social-hero .icon-link,
 footer .icon-link {
   display: inline-flex;
@@ -1239,11 +1243,11 @@ footer {
 
 .character-wrapper {
   position: absolute;
-  top: 2%;
+  top: 1%;
   left: 50%;
   transform: translateX(-50%);
-  width: clamp(320px, 36vw, 580px);
-  height: 185vh;
+  width: clamp(340px, 45vw, 720px);
+  max-width: 800px;
   opacity: 0.22;
   transition: opacity 0.4s ease;
   will-change: transform;
@@ -1258,10 +1262,11 @@ footer {
   width: 100%;
   height: auto;
   display: block;
-  object-fit: contain;
+  object-fit: cover;
   transform-origin: top center;
-  mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 94%, rgba(0,0,0,0) 100%);
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 94%, rgba(0,0,0,0) 100%);
+  border-radius: 2rem;
+  mask-image: radial-gradient(ellipse 94% 88% at 50% 48%, black 42%, rgba(0,0,0,0.85) 65%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 94% 88% at 50% 48%, black 42%, rgba(0,0,0,0.85) 65%, transparent 100%);
   will-change: transform;
 }
 
