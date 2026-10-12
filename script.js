@@ -311,10 +311,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const maxScroll = doc.scrollHeight - doc.clientHeight;
       const progress = maxScroll > 0 ? Math.min(1, Math.max(0, window.scrollY / maxScroll)) : 0;
 
-      // Scroll progression: subtle vertical gliding on scroll
-      const scrollShift = progress * -18;
+      // Subtle vertical gliding on scroll
+      const isMobile = window.innerWidth <= 768;
+      const scrollShift = progress * (isMobile ? -14 : -16);
 
-      charImg.style.transform = `translate3d(${mouseX.toFixed(2)}px, calc(${scrollShift.toFixed(2)}% + ${mouseY.toFixed(2)}px), 0)`;
+      if (isMobile) {
+        charImg.style.transform = `translate3d(0, ${scrollShift.toFixed(2)}%, 0)`;
+      } else {
+        charImg.style.transform = `translate3d(${mouseX.toFixed(2)}px, calc(${scrollShift.toFixed(2)}% + ${mouseY.toFixed(2)}px), 0)`;
+      }
 
       requestAnimationFrame(renderParallax);
     }
